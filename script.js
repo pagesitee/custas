@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const db = firebase.firestore();
 
+    // Configuração de segurança (ajuste as regras no Firebase Console)
+    db.settings({
+        timestampsInSnapshots: true,
+        merge: true
+    });
+
     // Valores em reais conforme a tabela (UFIR convertida)
     const valores = {
         'civil-geral': {
@@ -174,6 +180,24 @@ document.addEventListener('DOMContentLoaded', function() {
         link.style.fontWeight = '500';
         link.style.margin = '0 5px';
         return link;
+    }
+
+    // Configurar atalho de teclado (Shift + 1 + 9)
+    function setupKeyboardShortcut() {
+        const keysPressed = new Set();
+        
+        document.addEventListener('keydown', (e) => {
+            keysPressed.add(e.key);
+            
+            // Verifica se Shift + 1 + 9 estão pressionados
+            if (keysPressed.has('Shift') && keysPressed.has('1') && keysPressed.has('9')) {
+                window.location.href = 'indices.html';
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keysPressed.delete(e.key);
+        });
     }
 
     // Máscaras para os campos
@@ -597,6 +621,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Atualizar campos visíveis quando mudar seleções
     tipoProcessoSelect.addEventListener('change', atualizarCamposVisiveis);
     faseProcessoSelect.addEventListener('change', atualizarCamposVisiveis);
+
+    // Configurar atalho de teclado
+    setupKeyboardShortcut();
 
     // Inicializar campos visíveis
     atualizarCamposVisiveis();
