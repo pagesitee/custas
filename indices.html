@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Índices</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Editor de Índices</h1>
+            <p class="subtitle">Gerencie diferentes índices para cálculos monetários</p>
+        </header>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="tipo-indice">Tipo de Índice:</label>
+                <select id="tipo-indice" class="form-control">
+                    <!-- Opções serão preenchidas via JavaScript -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="novo-tipo-indice">Adicionar Novo Tipo:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="novo-tipo-indice" class="form-control" placeholder="Nome do novo índice">
+                    <button id="add-tipo-indice" class="btn btn-primary">Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button id="add-year" class="btn btn-primary">+ Adicionar Ano</button>
+            <button id="import-data" class="btn btn-secondary">Importar do Excel</button>
+            <button id="export-data" class="btn btn-secondary">Exportar para Excel</button>
+            <button id="save-data" class="btn btn-success">Salvar Índices</button>
+        </div>
+
+        <div class="table-container">
+            <table id="ipca-table">
+                <thead>
+                    <tr>
+                        <th>Ano</th>
+                        <th>Jan</th>
+                        <th>Fev</th>
+                        <th>Mar</th>
+                        <th>Abr</th>
+                        <th>Mai</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Ago</th>
+                        <th>Set</th>
+                        <th>Out</th>
+                        <th>Nov</th>
+                        <th>Dez</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Dados serão inseridos via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="instructions">
+            <h3>Instruções:</h3>
+            <ol>
+                <li>Selecione o tipo de índice que deseja editar</li>
+                <li>Para adicionar um novo tipo de índice, digite o nome e clique em "Adicionar"</li>
+                <li>Clique em "Adicionar Ano" para incluir um novo ano de dados</li>
+                <li>Clique duas vezes em qualquer célula para editar o valor</li>
+                <li>Não esqueça de salvar após fazer alterações</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="indices.js"></script>
+</body>
+</html>
