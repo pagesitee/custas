@@ -15,6 +15,12 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
+// Configuração de segurança (ajuste as regras no Firebase Console)
+db.settings({
+    timestampsInSnapshots: true,
+    merge: true
+});
+
 // Variáveis globais
 let ipcaIndices = {};
 let tiposIndices = [];
@@ -71,11 +77,20 @@ async function salvarIndices() {
 
 // Função para adicionar novo tipo de índice
 async function adicionarTipoIndice(novoTipo) {
-    if (!novoTipo || tiposIndices.includes(novoTipo)) return false;
+    if (!novoTipo || tiposIndices.includes(novoTipo)) {
+        console.log("Tipo de índice já existe ou é inválido");
+        return false;
+    }
     
     try {
         tiposIndices.push(novoTipo);
         await db.collection('indices').doc('tipos').set({ lista: tiposIndices });
+        
+        // Cria um documento vazio para o novo tipo
+        await db.collection('indices').doc(novoTipo).set({
+            "2024": {1: 0.00, 2: 0.00, 3: 0.00, 4: 0.00, 5: 0.00, 6: 0.00, 7: 0.00, 8: 0.00, 9: 0.00, 10: 0.00, 11: 0.00, 12: 0.00}
+        });
+        
         return true;
     } catch (error) {
         console.error("Erro ao adicionar tipo de índice:", error);
@@ -115,6 +130,28 @@ async function calcularIndiceAcumulado(anoInicio, mesInicio, anoFim, mesFim) {
     const coeficiente = await calcularCoeficiente(anoInicio, mesInicio, anoFim, mesFim);
     if (coeficiente === null) return null;
     return (coeficiente - 1) * 100;
+}
+
+// Função para navegar entre páginas com atalho
+function setupKeyboardShortcut() {
+    const keysPressed = new Set();
+    
+    document.addEventListener('keydown', (e) => {
+        keysPressed.add(e.key);
+        
+        // Verifica se Shift + 1 + 9 estão pressionados
+        if (keysPressed.has('Shift') && keysPressed.has('1') && keysPressed.has('9')) {
+            if (window.location.pathname.includes('indices.html')) {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = 'indices.html';
+            }
+        }
+    });
+    
+    document.addEventListener('keyup', (e) => {
+        keysPressed.delete(e.key);
+    });
 }
 
 // Editor de Índices (somente se a página tiver os elementos)
@@ -161,8 +198,12 @@ if (document.getElementById('table-body')) {
                 novoTipoInput.value = '';
                 await carregarIndices();
                 atualizarTiposIndices();
+                // Seleciona o novo tipo automaticamente
+                indiceAtual = novoTipo;
+                tipoIndiceSelect.value = novoTipo;
+                initializeTable();
             } else {
-                alert('Erro ao adicionar tipo de índice ou tipo já existe.');
+                alert('Erro ao adicionar tipo de índice. Verifique o console para mais detalhes.');
             }
         });
 
@@ -304,8 +345,12 @@ if (document.getElementById('table-body')) {
         // Inicializar
         atualizarTiposIndices();
         initializeTable();
+        setupKeyboardShortcut();
     });
 }
 
 // Carregar índices quando a página for carregada
-document.addEventListener('DOMContentLoaded', carregarIndices);
+document.addEventListener('DOMContentLoaded', function() {
+    carregarIndices();
+    setupKeyboardShortcut();
+});
